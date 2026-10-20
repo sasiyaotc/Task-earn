@@ -1,0 +1,23 @@
+# === ADD YOUR DETAILS HERE - මේක විතරක් Edit කරන්න ===
+BOT_TOKEN = "8893273268:AAEMjiQa6_De7az_EUeGYFu3jsyjH9ttgGs" # @BotFather -> /newbot
+ADMIN_ID = 8886499198 # @userinfobot එකෙන් ගන්න ඔයාගේ ID
+ADMIN_USERNAME = "@Zess_kyc"
+
+USDT_BEP20_ADDRESS = "0x52824938de138886fdf6f7a80262e5c0a173d92c" # ඔයාගේ Real
+
+CHANNEL_1 = "@mini_earing_bot"
+CHANNEL_2 = "@earn_mini_pay"
+CHANNEL_1_LINK = "https://t.me/mini_earing_bot"
+CHANNEL_2_LINK = "https://t.me/earn_mini_pay"
+
+ADSBITVEX_APP_ID = "000530"
+AD_REWARD_USER = 0.005
+AD_PROFIT_OWNER = 0.0034
+ADS_PER_DAY = 30
+TASK_JOIN_USER = 0.003
+TASK_JOIN_OWNER = 0.007
+REF_REWARD = 0.02
+MIN_WITHDRAW = 1.0
+MIN_REFS = 5
+TASK_PRICE_2000 = 4
+TASK_PRICE_UNLIMITED = 6
