@@ -1,6 +1,5 @@
 Flask
 Flask-Cors
-aiogram==2.25.2
-requests
 gunicorn
+requests
 python-dotenv
