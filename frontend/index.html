@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Task & Earn Neon</title>
+<title>Task & Earn</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <script src="https://sdk.adsbitvex.com/functions/v1/ad-script?appid=000530"></script>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&display=swap" rel="stylesheet">
@@ -20,73 +20,65 @@ input{width:100%;padding:12px;border-radius:10px;border:1px solid #00f5ff;backgr
 </head>
 <body>
 <div class="header">⚡ TASK & EARN NEON - $0.005 / AD</div>
-
 <div id="adTab">
   <div class="card"><h2 id="bal">$0.0000</h2><p>Balance | <span id="cnt">0/30</span> Ads Today</p><small>Owner Profit $0.0034 per ad - 500 users = $50/day</small></div>
   <div class="card"><button class="neon" id="watchBtn" onclick="watchAd()">⚡ WATCH AD +$0.005 (Full Watch Only)</button><p style="font-size:10px;text-align:center;margin-top:8px;color:#00f5ff">Balance will be added only after watching full 15s ad!</p></div>
 </div>
-
 <div id="taskTab" style="display:none">
   <div class="card"><h3>📋 Available Tasks - Earn $0.003 per join</h3><div id="tasks">Loading tasks...</div></div>
   <div class="card"><button class="neon" onclick="document.getElementById('addTaskModal').style.display='block'">➕ ADD YOUR TASK ($4 up to 2000 | $6 Unlimited)</button></div>
 </div>
-
-<div id="refTab" style="display:none"><div class="card"><h3>👥 Referral - $0.02 Each</h3><p id="reflink" style="word-break:break-all;color:#00f5ff;font-size:12px"></p><button class="neon" onclick="navigator.clipboard.writeText(document.getElementById('reflink').innerText)">Copy Referral Link</button><p style="margin-top:12px">Real Referrals: <span id="rc">0</span> | Fake Referrals Auto-Banned</p></div></div>
-
+<div id="refTab" style="display:none"><div class="card"><h3>👥 Referral - $0.02 Each</h3><p id="reflink" style="word-break:break-all;color:#00f5ff;font-size:12px"></p><button class="neon" onclick="navigator.clipboard.writeText(document.getElementById('reflink').innerText)">Copy Referral Link</button><p style="margin-top:12px">Real Referrals: <span id="rc">0</span> | Fake Auto-Banned</p></div></div>
 <div id="profileTab" style="display:none"><div class="card"><h3>👤 Profile - Withdraw</h3><p>Minimum $1 + 5 Real Referrals</p><input id="wallet" placeholder="Enter Your USDT BEP20 Address"><br><br><button class="neon" onclick="withdraw()">💸 REQUEST WITHDRAW</button></div></div>
-
 <div id="addTaskModal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.92);padding:20px;overflow:auto;box-sizing:border-box">
   <div class="card"><h3>➕ Add Your Task</h3>
-  <input id="tLink" placeholder="Telegram Group/Channel Link (https://t.me/...)"><br><br>
+  <input id="tLink" placeholder="Telegram Group/Channel Link"><br><br>
   <input id="tMembers" type="number" placeholder="Members Needed (2000 = $4, >2000 = $6)" oninput="calcPrice()"><br><br>
   <p id="tPrice">Price: $0</p>
   <p style="font-size:11px">Pay to (BEP20):<br><code style="color:#00f5ff;word-break:break-all">0x52824938de138886fdf6f7a80262e5c0a173d92c</code></p>
   <input id="tTx" placeholder="Enter Transaction Hash after payment"><br><br>
   <button class="neon" onclick="sendTask()">Send To Admin</button>
-  <button onclick="document.getElementById('addTaskModal').style.display='none'" style="margin-top:10px;width:100%;padding:10px;background:#333;color:#fff;border:none;border-radius:10px;cursor:pointer">Close</button>
+  <button onclick="document.getElementById('addTaskModal').style.display='none'" style="margin-top:10px;width:100%;padding:10px;background:#333;color:#fff;border:none;border-radius:10px">Close</button>
   </div>
 </div>
-
 <div class="bottom">
   <div id="n-ad" class="active" onclick="tab('ad')">🎬<br>Ads</div>
   <div id="n-task" onclick="tab('task')">📋<br>Task</div>
   <div id="n-ref" onclick="tab('ref')">👥<br>Referral</div>
   <div id="n-profile" onclick="tab('profile')">👤<br>Profile</div>
 </div>
-
 <script>
-const API="https://YOUR-KOYEB-APP.koyeb.app";
-const UID=Telegram.WebApp.initDataUnsafe.user?.id || 123456;
+const API = window.location.origin;
+const UID = window.Telegram?.WebApp?.initDataUnsafe?.user?.id || 123456;
 function tab(t){document.querySelectorAll('[id$="Tab"]').forEach(e=>e.style.display='none');document.querySelectorAll('.bottom div').forEach(e=>e.classList.remove('active'));document.getElementById(t+'Tab').style.display='block';document.getElementById('n-'+t).classList.add('active'); if(t==='task') loadTasks();}
-function calcPrice(){let m=parseInt(document.getElementById('tMembers').value)||0; let p=m<=2000?4:6; if(m>0) document.getElementById('tPrice').innerText=`Price: $${p} - Pay to admin wallet`; return p}
-
+function calcPrice(){let m=parseInt(document.getElementById('tMembers').value)||0; let p=m<=2000?4:6; if(m>0) document.getElementById('tPrice').innerText=`Price: $${p}`; return p}
 async function watchAd(){
   let btn=document.getElementById('watchBtn'); btn.disabled=true; btn.innerText="⏳ Loading $8.40 CPM Ad...";
   try{
     await window.showadsbitvex().then(async()=>{
-      let r=await fetch(`${API}/api/watch`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({user_id:UID, appid:'000530'})});
+      let r=await fetch(`${API}/api/watch`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({user_id:UID})});
       let j=await r.json();
-      if(j.ok){ Telegram.WebApp.HapticFeedback.notificationOccurred('success'); Telegram.WebApp.showAlert(`✅ $0.005 Added! Keep earning!`); load(); }
+      if(j.ok){ Telegram.WebApp.HapticFeedback.notificationOccurred('success'); Telegram.WebApp.showAlert(`✅ $0.005 Added!`); load(); }
       else Telegram.WebApp.showAlert(j.error);
-    }).catch(e=>{ Telegram.WebApp.showAlert("No ads available now, please try again in 15 seconds!"); });
+    }).catch(()=>{ Telegram.WebApp.showAlert("No ads now, try again in 15s!"); });
   }finally{ btn.disabled=false; btn.innerText="⚡ WATCH AD +$0.005 (Full Watch Only)"; }
 }
-async function load(){ let r=await fetch(`${API}/api/me?user_id=${UID}`); let d=await r.json(); document.getElementById('bal').innerText=`$${d.balance}`; document.getElementById('cnt').innerText=`${d.today}/30`; document.getElementById('reflink').innerText=`https://t.me/task_earn_20_bot?start=ref_${UID}`; document.getElementById('rc').innerText=d.refs; }
+async function load(){ let r=await fetch(`${API}/api/me?user_id=${UID}`); let d=await r.json(); document.getElementById('bal').innerText=`$${d.balance}`; document.getElementById('cnt').innerText=`${d.today}/30`; document.getElementById('reflink').innerText=`https://t.me/${window.Telegram?.WebApp?.initDataUnsafe?.user?.username || 'your_bot'}?start=ref_${UID}`; document.getElementById('rc').innerText=d.refs; }
 async function loadTasks(){
   let r=await fetch(`${API}/api/tasks`); let list=await r.json();
   let html=""; list.forEach(t=>{
-    html+=`<div class="task-item"><p>📢 ${t.title} - Reward $${t.reward_user}</p><a href="${t.link}" target="_blank" style="text-decoration:none"><button class="neon" style="background:#222;color:#00f5ff;border:1px solid #00f5ff">1️⃣ JOIN GROUP</button></a><button class="neon" onclick="verifyTask('${t.id}')" style="margin-top:8px">2️⃣ VERIFY - I Joined</button><br><small style="color:#aaa;font-size:9px">Touching does NOT add balance! You must join and verify!</small></div>`;
+    html+=`<div class="task-item"><p>📢 ${t.title} - $${t.reward_user}</p><a href="${t.link}" target="_blank"><button class="neon" style="background:#222;color:#00f5ff;border:1px solid #00f5ff">1️⃣ JOIN GROUP</button></a><button class="neon" onclick="verifyTask('${t.id}')" style="margin-top:8px">2️⃣ VERIFY - I Joined</button><br><small style="color:#aaa;font-size:9px">Touching does NOT add balance!</small></div>`;
   });
-  document.getElementById('tasks').innerHTML=html||"No tasks available now!";
+  document.getElementById('tasks').innerHTML=html||"No tasks now!";
 }
 async function verifyTask(taskId){
-  Telegram.WebApp.showAlert("⏳ Verifying if you really joined the group...");
+  Telegram.WebApp.showAlert("⏳ Verifying...");
   let r=await fetch(`${API}/api/task/verify`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({user_id:UID, task_id:taskId})});
   let j=await r.json();
-  if(j.ok){ Telegram.WebApp.HapticFeedback.notificationOccurred('success'); Telegram.WebApp.showAlert(`✅ Verified! $${j.reward} added to your balance!`); load(); }
+  if(j.ok){ Telegram.WebApp.HapticFeedback.notificationOccurred('success'); Telegram.WebApp.showAlert(`✅ Verified! $${j.reward} added!`); load(); }
   else Telegram.WebApp.showAlert(`❌ ${j.error}`);
 }
-async function sendTask(){ let data={user_id:UID, link:document.getElementById('tLink').value, members:document.getElementById('tMembers').value, price:calcPrice(), txid:document.getElementById('tTx').value}; if(!data.link||!data.txid){ Telegram.WebApp.showAlert("Please fill link and TxID!"); return; } let r=await fetch(`${API}/api/add_task`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)}); Telegram.WebApp.showAlert("✅ Task request sent to admin! You will be notified after approval!"); document.getElementById('addTaskModal').style.display='none'; }
+async function sendTask(){ let data={user_id:UID, link:document.getElementById('tLink').value, members:document.getElementById('tMembers').value, price:calcPrice(), txid:document.getElementById('tTx').value}; if(!data.link||!data.txid){ Telegram.WebApp.showAlert("Please fill link and TxID!"); return; } let r=await fetch(`${API}/api/add_task`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)}); Telegram.WebApp.showAlert("✅ Task request sent to admin!"); document.getElementById('addTaskModal').style.display='none'; }
 async function withdraw(){ let w=document.getElementById('wallet').value; let r=await fetch(`${API}/api/withdraw`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({user_id:UID, wallet:w})}); let j=await r.json(); Telegram.WebApp.showAlert(j.msg); }
 load();
 </script>
